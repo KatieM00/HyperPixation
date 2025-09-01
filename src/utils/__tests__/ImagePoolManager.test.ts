@@ -260,6 +260,49 @@ describe('ImagePoolManager', () => {
       expect(result.isValid).toBe(true);
     });
   });
+
+  describe('edge cases and error scenarios', () => {
+    it('should validate image properties correctly', () => {
+      // Test that our validation logic works with the current mock data
+      const result = poolManager.validateImagePool();
+      
+      // All our mock images have unique IDs and valid properties
+      expect(result.isValid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('should detect duplicate answers in validation logic', () => {
+      // Test the validation logic by checking if it would detect duplicates
+      // We can't easily mock the data, but we can test the logic
+      const result = poolManager.validateImagePool();
+      
+      // Our mock data has unique answers, so no warnings expected
+      expect(result.warnings.filter(w => w.includes('Duplicate answer'))).toHaveLength(0);
+    });
+
+    it('should handle very small pools gracefully', () => {
+      const manager = new ImagePoolManager({ minPoolSize: 1 });
+      
+      // Test with animals category (2 images)
+      const result = manager.selectGameImages(1, ['animals']);
+      
+      expect(result.images).toHaveLength(1);
+      expect(result.hadInsufficientImages).toBe(false);
+    });
+
+    it('should handle requesting more images than max duplicates allow', () => {
+      const manager = new ImagePoolManager({ 
+        maxDuplicatesAllowed: 1,
+        minPoolSize: 1 
+      });
+      
+      // Request way more than available
+      const result = manager.selectGameImages(20, ['animals']); // only 2 available
+      
+      expect(result.duplicatesUsed).toBe(18);
+      expect(result.warnings[0]).toContain('exceeds max allowed: 1');
+    });
+  });
 });
 
 describe('convenience functions', () => {
@@ -288,48 +331,5 @@ describe('convenience functions', () => {
       expect(stats.totalImages).toBe(10);
       expect(stats.isHealthy).toBe(true);
     });
-  });
-});
-
-  describe('edge cases and error scenarios', () => {
-    it('should validate image properties correctly', () => {
-      // Test that our validation logic works with the current mock data
-      const result = poolManager.validateImagePool();
-      
-      // All our mock images have unique IDs and valid properties
-      expect(result.isValid).toBe(true);
-      expect(result.errors).toHaveLength(0);
-    });
-
-    it('should detect duplicate answers in validation logic', () => {
-      // Test the validation logic by checking if it would detect duplicates
-      // We can't easily mock the data, but we can test the logic
-      const result = poolManager.validateImagePool();
-      
-      // Our mock data has unique answers, so no warnings expected
-      expect(result.warnings.filter(w => w.includes('Duplicate answer'))).toHaveLength(0);
-    });
-
-  it('should handle very small pools gracefully', () => {
-    const manager = new ImagePoolManager({ minPoolSize: 1 });
-    
-    // Test with animals category (2 images)
-    const result = manager.selectGameImages(1, ['animals']);
-    
-    expect(result.images).toHaveLength(1);
-    expect(result.hadInsufficientImages).toBe(false);
-  });
-
-  it('should handle requesting more images than max duplicates allow', () => {
-    const manager = new ImagePoolManager({ 
-      maxDuplicatesAllowed: 1,
-      minPoolSize: 1 
-    });
-    
-    // Request way more than available
-    const result = manager.selectGameImages(20, ['animals']); // only 2 available
-    
-    expect(result.duplicatesUsed).toBe(18);
-    expect(result.warnings[0]).toContain('exceeds max allowed: 1');
   });
 });

@@ -54,7 +54,15 @@ describe('Image Data Structure', () => {
     const requestedCount = allImages.length + 10;
     const randomImages = getRandomGameImages(requestedCount);
     
-    expect(randomImages.length).toBeLessThanOrEqual(allImages.length);
+    // New behavior: function should return the requested count by duplicating images
+    expect(randomImages.length).toBe(requestedCount);
+    
+    // Verify that all original images are included
+    const originalIds = allImages.map(img => img.id);
+    const returnedIds = randomImages.map(img => img.id);
+    originalIds.forEach(id => {
+      expect(returnedIds).toContain(id);
+    });
   });
 
   it('should have proper difficulty distribution', () => {

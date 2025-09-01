@@ -279,17 +279,34 @@ export function getAllImages(): GameImage[] {
 
 /**
  * Get a random selection of images for a game session
- * Note: This is a placeholder implementation. The actual randomization
- * logic will be implemented in task 1 (ImageRandomizer utility).
+ * Uses proper randomization with fallback for compatibility
  * @param count Number of images to select (default: 10)
  * @returns Array of randomly selected GameImage objects
  */
 export function getRandomGameImages(count: number = 10): GameImage[] {
   const allImages = getAllImages();
   
-  // Simple shuffle for now - will be replaced with proper randomization
-  const shuffled = [...allImages].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(count, allImages.length));
+  // Use Fisher-Yates shuffle algorithm for proper randomization
+  const shuffled = [...allImages];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  // Handle case where more images are requested than available
+  if (count > shuffled.length) {
+    const result = [...shuffled];
+    const remaining = count - shuffled.length;
+    
+    // Fill remaining slots by cycling through the pool
+    for (let i = 0; i < remaining; i++) {
+      result.push(shuffled[i % shuffled.length]);
+    }
+    
+    return result;
+  }
+  
+  return shuffled.slice(0, count);
 }
 
 // Maintain backward compatibility with existing gameImages export
