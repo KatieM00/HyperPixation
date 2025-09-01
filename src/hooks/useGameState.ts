@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { GameState, GameImage, LevelResult } from '../types/game';
-import { gameImages } from '../data/images';
+import { gameImages, getRandomGameImages } from '../data/images';
 
 const initialGameState: GameState = {
   currentLevel: 1,
@@ -17,9 +17,15 @@ const initialGameState: GameState = {
 
 export const useGameState = () => {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
+  // Internal state for selected images - not exposed in the external interface
+  const [selectedImages, setSelectedImages] = useState<GameImage[]>(gameImages);
 
   const startGame = useCallback(() => {
-    const firstImage = gameImages[0];
+    // Get randomized images for this game session
+    const randomizedImages = getRandomGameImages(10);
+    setSelectedImages(randomizedImages);
+    
+    const firstImage = randomizedImages[0];
     setGameState({
       ...initialGameState,
       isGameActive: true,
@@ -29,6 +35,8 @@ export const useGameState = () => {
 
   const resetGame = useCallback(() => {
     setGameState(initialGameState);
+    // Reset to original images when resetting game
+    setSelectedImages(gameImages);
   }, []);
 
   const nextLevel = useCallback(() => {
@@ -41,7 +49,8 @@ export const useGameState = () => {
       return;
     }
 
-    const nextImage = gameImages[gameState.currentLevel];
+    // Use the selected images for this game session
+    const nextImage = selectedImages[gameState.currentLevel];
     setGameState(prev => ({
       ...prev,
       currentLevel: prev.currentLevel + 1,
@@ -51,7 +60,7 @@ export const useGameState = () => {
       currentImage: nextImage,
       guessHistory: []
     }));
-  }, [gameState.currentLevel]);
+  }, [gameState.currentLevel, selectedImages]);
 
   const makeGuess = useCallback((guess: string) => {
     if (!gameState.currentImage || !gameState.isGameActive) return false;

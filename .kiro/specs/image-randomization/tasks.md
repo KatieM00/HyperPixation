@@ -28,13 +28,18 @@
 
 
 
+
   - Implement image selection logic that handles pool size variations
   - Add error handling for insufficient images scenario
   - Create functions to validate image pool integrity
   - Write unit tests for pool management functions
   - _Requirements: 2.2, 4.3_
 
-- [ ] 4. Integrate randomization into game state hook
+- [x] 4. Integrate randomization into game state hook
+
+
+
+
   - Modify useGameState hook to use randomized image selection on game start
   - Ensure external interface remains unchanged for existing components
   - Add internal selectedImages state management
