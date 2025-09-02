@@ -97,7 +97,7 @@ export const imageCategories: ImageCategory[] = [
       {
         id: 19,
         url: 'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg',
-        answer: 'pizza',
+        answer: 'laptop',
         difficulty: 4
       },
       {
@@ -284,28 +284,38 @@ export function getAllImages(): GameImage[] {
  * @returns Array of randomly selected GameImage objects
  */
 export function getRandomGameImages(count: number = 10): GameImage[] {
+  // Handle invalid inputs
+  if (count <= 0 || !Number.isFinite(count)) {
+    return [];
+  }
+
   const allImages = getAllImages();
-  
+
+  // Handle empty pool
+  if (allImages.length === 0) {
+    return [];
+  }
+
   // Use Fisher-Yates shuffle algorithm for proper randomization
   const shuffled = [...allImages];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  
+
   // Handle case where more images are requested than available
   if (count > shuffled.length) {
     const result = [...shuffled];
     const remaining = count - shuffled.length;
-    
+
     // Fill remaining slots by cycling through the pool
     for (let i = 0; i < remaining; i++) {
       result.push(shuffled[i % shuffled.length]);
     }
-    
+
     return result;
   }
-  
+
   return shuffled.slice(0, count);
 }
 
