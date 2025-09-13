@@ -1,7 +1,7 @@
 import { GameImage } from '../types/game';
 
-// All images from CSV file
-export const allPexelsImages: GameImage[] = [
+// Game images from CSV file - these are the ONLY images used in the game
+export const gameImages: GameImage[] = [
   { id: 1, url: 'https://images.pexels.com/photos/145939/pexels-photo-145939.jpeg', answer: 'tiger', difficulty: 2 },
   { id: 2, url: 'https://images.pexels.com/photos/46024/pexels-photo-46024.jpeg', answer: 'cat and dog', difficulty: 4 },
   { id: 3, url: 'https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg', answer: 'lion', difficulty: 2 },
@@ -76,16 +76,7 @@ export const allPexelsImages: GameImage[] = [
 ];
 
 /**
- * Get all images from the Pexels collection
- * @returns Array of all GameImage objects
- */
-export function getAllImages(): GameImage[] {
-  return allPexelsImages;
-}
-
-/**
  * Get a random selection of images for a game session
- * Uses proper randomization with fallback for compatibility
  * @param count Number of images to select (default: 10)
  * @returns Array of randomly selected GameImage objects
  */
@@ -95,15 +86,13 @@ export function getRandomGameImages(count: number = 10): GameImage[] {
     return [];
   }
 
-  const allImages = getAllImages();
-
   // Handle empty pool
-  if (allImages.length === 0) {
+  if (gameImages.length === 0) {
     return [];
   }
 
   // Use Fisher-Yates shuffle algorithm for proper randomization
-  const shuffled = [...allImages];
+  const shuffled = [...gameImages];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -124,18 +113,3 @@ export function getRandomGameImages(count: number = 10): GameImage[] {
 
   return shuffled.slice(0, count);
 }
-
-// Maintain backward compatibility with existing gameImages export
-// This preserves the original 10 images for any existing code that depends on them
-export const gameImages: GameImage[] = [
-  { id: 1, url: 'https://images.pexels.com/photos/145939/pexels-photo-145939.jpeg', answer: 'cat', difficulty: 3 },
-  { id: 2, url: 'https://images.pexels.com/photos/46024/pexels-photo-46024.jpeg', answer: 'dog', difficulty: 4 },
-  { id: 31, url: 'https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg', answer: 'car', difficulty: 3 },
-  { id: 94, url: 'https://images.pexels.com/photos/414262/pexels-photo-414262.jpeg', answer: 'coffee', difficulty: 4 },
-  { id: 125, url: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg', answer: 'skyline', difficulty: 5 },
-  { id: 61, url: 'https://images.pexels.com/photos/531321/pexels-photo-531321.jpeg', answer: 'mountain', difficulty: 4 },
-  { id: 91, url: 'https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg', answer: 'pizza', difficulty: 3 },
-  { id: 65, url: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg', answer: 'beach', difficulty: 4 },
-  { id: 68, url: 'https://images.pexels.com/photos/814499/pexels-photo-814499.jpeg', answer: 'flower', difficulty: 4 },
-  { id: 121, url: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg', answer: 'eiffel', difficulty: 4 }
-];
