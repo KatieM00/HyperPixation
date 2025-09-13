@@ -12,7 +12,8 @@ const initialGameState: GameState = {
   showTimer: false,
   currentImage: null,
   guessHistory: [],
-  levelResults: []
+  levelResults: [],
+  showUnblurred: false
 };
 
 export const useGameState = () => {
@@ -58,7 +59,8 @@ export const useGameState = () => {
       showTimer: false,
       timeRemaining: 30,
       currentImage: nextImage,
-      guessHistory: []
+      guessHistory: [],
+      showUnblurred: false
     }));
   }, [gameState.currentLevel, selectedImages]);
 
@@ -80,13 +82,14 @@ export const useGameState = () => {
         ...prev,
         score: prev.score + points,
         guessHistory: [...prev.guessHistory, guess],
-        levelResults: [...prev.levelResults, levelResult]
+        levelResults: [...prev.levelResults, levelResult],
+        showUnblurred: true
       }));
       
-      // Small delay before moving to next level
+      // Show unblurred image for 2 seconds before moving to next level
       setTimeout(() => {
         nextLevel();
-      }, 1500);
+      }, 2000);
       
       return true;
     } else {

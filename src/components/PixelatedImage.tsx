@@ -86,7 +86,7 @@ export const PixelatedImage: React.FC<PixelatedImageProps> = ({
       />
       <canvas
         ref={canvasRef}
-        className="w-full h-full object-contain rounded-2xl"
+        className="w-full h-full object-contain rounded-2xl transition-all duration-500 ease-in-out"
       />
     </div>
   );

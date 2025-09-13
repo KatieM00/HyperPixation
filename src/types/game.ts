@@ -16,6 +16,7 @@ export interface GameState {
   currentImage: GameImage | null;
   guessHistory: string[];
   levelResults: LevelResult[];
+  showUnblurred: boolean;
 }
 
 export interface LevelResult {

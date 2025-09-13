@@ -48,6 +48,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) =>
   }, [gameState.currentLevel]);
 
   const getPixelationLevel = () => {
+    // If showing unblurred image after correct answer, return 1 for clear image
+    if (gameState.showUnblurred) {
+      return 1;
+    }
     const levels = [50, 35, 20, 10, 1]; // Pixel sizes for heavy pixelation
     return levels[gameState.currentGuess - 1] || 8;
   };
@@ -134,11 +138,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) =>
                   onChange={(e) => setCurrentGuess(e.target.value)}
                   placeholder="Enter your guess..."
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-lg transition-colors"
-                  disabled={!gameState.isGameActive}
+                  disabled={!gameState.isGameActive || gameState.showUnblurred}
                 />
                 <button
                   type="submit"
-                  disabled={!currentGuess.trim() || !gameState.isGameActive}
+                  disabled={!currentGuess.trim() || !gameState.isGameActive || gameState.showUnblurred}
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   Submit Guess
@@ -154,6 +158,20 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) =>
                     : 'bg-red-100 text-red-800'
                 }`}>
                   {feedback.message}
+                  {gameState.showUnblurred && (
+                    <div className="mt-2 text-sm text-green-700">
+                      The answer was: <span className="font-bold">{gameState.currentImage?.answer}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Show unblurred message when revealing answer */}
+              {gameState.showUnblurred && !feedback.type && (
+                <div className="p-4 rounded-xl text-center font-medium bg-green-100 text-green-800">
+                  <div className="text-lg font-bold mb-1">Correct!</div>
+                  <div className="text-sm">The answer was: <span className="font-bold">{gameState.currentImage?.answer}</span></div>
+                  <div className="text-xs mt-2 text-green-600">Moving to next level...</div>
                 </div>
               )}
 
