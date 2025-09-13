@@ -12,7 +12,6 @@ export const gameImages: GameImage[] = [
   { id: 8, url: 'https://images.pexels.com/photos/1661179/pexels-photo-1661179.jpeg', answer: 'lovebird', difficulty: 5 },
   { id: 9, url: 'https://images.pexels.com/photos/847393/pexels-photo-847393.jpeg', answer: 'turtle', difficulty: 3 },
   { id: 10, url: 'https://images.pexels.com/photos/2295744/pexels-photo-2295744.jpeg', answer: 'fox', difficulty: 4 },
-  { id: 11, url: 'https://images.pexels.com/photos/39632/tiger-portrait-animal.jpg', answer: 'tiger', difficulty: 5 },
   { id: 12, url: 'https://images.pexels.com/photos/20787/pexels-photo.jpg', answer: 'cat', difficulty: 3 },
   { id: 14, url: 'https://images.pexels.com/photos/3013670/pexels-photo-3013670.jpeg', answer: 'fire fighter', difficulty: 5 },
   { id: 15, url: 'https://images.pexels.com/photos/248280/pexels-photo-248280.jpeg', answer: 'cat', difficulty: 5 },
