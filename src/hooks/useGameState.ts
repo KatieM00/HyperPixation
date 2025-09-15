@@ -13,7 +13,9 @@ const initialGameState: GameState = {
   currentImage: null,
   guessHistory: [],
   levelResults: [],
-  showUnblurred: false
+  showUnblurred: false,
+  showLevelCompletePopup: false,
+  lastLevelResult: null
 };
 
 export const useGameState = () => {
@@ -45,7 +47,9 @@ export const useGameState = () => {
       setGameState(prev => ({
         ...prev,
         isGameActive: false,
-        isGameComplete: true
+        isGameComplete: true,
+        showLevelCompletePopup: false,
+        showUnblurred: false
       }));
       return;
     }
@@ -60,9 +64,24 @@ export const useGameState = () => {
       timeRemaining: 30,
       currentImage: nextImage,
       guessHistory: [],
-      showUnblurred: false
+      showUnblurred: false,
+      showLevelCompletePopup: false,
+      lastLevelResult: null
     }));
   }, [gameState.currentLevel, selectedImages]);
+
+  const closeLevelCompletePopup = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      showLevelCompletePopup: false,
+      showUnblurred: false
+    }));
+    
+    // Move to next level after closing popup
+    setTimeout(() => {
+      nextLevel();
+    }, 100);
+  }, [nextLevel]);
 
   const makeGuess = useCallback((guess: string) => {
     if (!gameState.currentImage || !gameState.isGameActive) return false;
@@ -83,13 +102,10 @@ export const useGameState = () => {
         score: prev.score + points,
         guessHistory: [...prev.guessHistory, guess],
         levelResults: [...prev.levelResults, levelResult],
-        showUnblurred: true
+        showUnblurred: true,
+        showLevelCompletePopup: true,
+        lastLevelResult: levelResult
       }));
-      
-      // Show unblurred image for 2 seconds before moving to next level
-      setTimeout(() => {
-        nextLevel();
-      }, 2000);
       
       return true;
     } else {
@@ -108,13 +124,10 @@ export const useGameState = () => {
         setGameState(prev => ({
           ...prev,
           guessHistory: newHistory,
-          levelResults: [...prev.levelResults, levelResult]
+          levelResults: [...prev.levelResults, levelResult],
+          showLevelCompletePopup: true,
+          lastLevelResult: levelResult
         }));
-        
-        // Game over for this level
-        setTimeout(() => {
-          nextLevel();
-        }, 1500);
       } else if (newGuess === 5) {
         // Start timer for final guess
         setGameState(prev => ({
@@ -156,14 +169,11 @@ export const useGameState = () => {
               levelResults: [...current.levelResults, levelResult]
             }));
             
-            // Time's up, move to next level
-            setTimeout(() => {
-              nextLevel();
-            }, 100);
             return {
               ...prev,
               timeRemaining: 0,
-              showTimer: false
+              showTimer: false,
+              showLevelCompletePopup: true
             };
           }
           return {
@@ -183,6 +193,7 @@ export const useGameState = () => {
     gameState,
     startGame,
     resetGame,
-    makeGuess
+    makeGuess,
+    closeLevelCompletePopup
   };
 };

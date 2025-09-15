@@ -2,13 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GameState } from '../types/game';
 import { Timer, Star, ArrowRight } from 'lucide-react';
 import { PixelatedImage } from './PixelatedImage';
+import { LevelCompletePopup } from './LevelCompletePopup';
 
 interface GameScreenProps {
   gameState: GameState;
   onGuess: (guess: string) => boolean;
+  onCloseLevelCompletePopup: () => void;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCloseLevelCompletePopup }) => {
   const [currentGuess, setCurrentGuess] = useState('');
   const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect' | null; message: string }>({ type: null, message: '' });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -138,11 +140,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) =>
                   onChange={(e) => setCurrentGuess(e.target.value)}
                   placeholder="Enter your guess..."
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-lg transition-colors"
-                  disabled={!gameState.isGameActive || gameState.showUnblurred}
+                  disabled={!gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}
                 />
                 <button
                   type="submit"
-                  disabled={!currentGuess.trim() || !gameState.isGameActive || gameState.showUnblurred}
+                  disabled={!currentGuess.trim() || !gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   Submit Guess
@@ -216,6 +218,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess }) =>
           </div>
         </div>
       </div>
+
+      {/* Level Complete Popup */}
+      {gameState.showLevelCompletePopup && gameState.currentImage && gameState.lastLevelResult && (
+        <LevelCompletePopup
+          isVisible={gameState.showLevelCompletePopup}
+          image={gameState.currentImage}
+          wasCorrect={gameState.lastLevelResult.correct}
+          pointsEarned={gameState.lastLevelResult.pointsEarned}
+          guessNumber={gameState.lastLevelResult.guessNumber}
+          playerGuesses={gameState.guessHistory}
+          currentLevel={gameState.currentLevel}
+          totalLevels={10}
+          onContinue={onCloseLevelCompletePopup}
+        />
+      )}
     </div>
   );
 };

@@ -14,7 +14,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
             Hyper<span className="text-orange-500">Pixation</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            Guess the image as it becomes clearer with each attempt
+            This "Test your pixel recognition to work out what's hidden within the pixels! Think you know what pixelated animals, every day items or even landscapes look like? How many points will you get?"
           </p>
         </div>
 
@@ -26,13 +26,13 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
                 <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <span className="text-orange-600 font-bold">1</span>
                 </div>
-                <p className="text-gray-700">Look at the pixelated image and make your guess</p>
+                <p className="text-gray-700">Look at the pixelated image and make your guess. Is it one word, or an entire sentence? </p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <span className="text-blue-600 font-bold">2</span>
                 </div>
-                <p className="text-gray-700">Each wrong guess reveals more detail</p>
+                <p className="text-gray-700">Each wrong guess reveals more detail - think outside the box!</p>
               </div>
             </div>
             <div className="space-y-4">

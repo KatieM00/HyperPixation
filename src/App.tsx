@@ -7,7 +7,7 @@ import { GameScreen as GameScreenType } from './types/game';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<GameScreenType>('start');
-  const { gameState, startGame, resetGame, makeGuess } = useGameState();
+  const { gameState, startGame, resetGame, makeGuess, closeLevelCompletePopup } = useGameState();
 
   const handleStartGame = () => {
     startGame();
@@ -33,7 +33,11 @@ function App() {
       )}
       
       {currentScreen === 'playing' && gameState.isGameActive && (
-        <GameScreen gameState={gameState} onGuess={makeGuess} />
+        <GameScreen 
+          gameState={gameState} 
+          onGuess={makeGuess} 
+          onCloseLevelCompletePopup={closeLevelCompletePopup}
+        />
       )}
       
       {currentScreen === 'end' && (
