@@ -120,9 +120,14 @@ export const useGameState = () => {
         guessHistory: [...prev.guessHistory, guess],
         levelResults: [...prev.levelResults, levelResult],
         showUnblurred: true,
-        showLevelCompletePopup: true,
+        showLevelCompletePopup: false,
         lastLevelResult: levelResult
       }));
+      
+      // Auto-advance to next level after a short delay for correct answers
+      setTimeout(() => {
+        nextLevel();
+      }, 2000);
       
       return true;
     } else {
@@ -181,16 +186,13 @@ export const useGameState = () => {
               pointsEarned: 0
             };
             
-            setGameState(current => ({
-              ...current,
-              levelResults: [...current.levelResults, levelResult]
-            }));
-            
             return {
               ...prev,
               timeRemaining: 0,
               showTimer: false,
-              showLevelCompletePopup: true
+              showLevelCompletePopup: true,
+              levelResults: [...prev.levelResults, levelResult],
+              lastLevelResult: levelResult
             };
           }
           return {

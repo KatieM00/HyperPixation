@@ -47,13 +47,16 @@ export const LevelCompletePopup: React.FC<LevelCompletePopupProps> = ({
         showContent ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
       }`}>
         <div className="text-center">
-          <div className={`inline-block px-6 py-4 rounded-xl font-bold text-3xl shadow-lg ${
-            wasCorrect 
-              ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-2 border-green-300' 
-              : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-2 border-red-300'
-          }`}>
-            {image.answer}
-          </div>
+          {wasCorrect ? (
+            <div className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 border-2 border-green-300 inline-block px-6 py-4 rounded-xl font-bold text-3xl shadow-lg">
+              Correct!
+            </div>
+          ) : (
+            <div className="bg-gradient-to-r from-red-100 to-red-200 text-red-800 border-2 border-red-300 inline-block px-6 py-4 rounded-xl shadow-lg">
+              <div className="text-xl font-semibold mb-2">Oops! The answer was...</div>
+              <div className="text-3xl font-bold">{image.answer}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
