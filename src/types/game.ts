@@ -19,6 +19,8 @@ export interface GameState {
   showUnblurred: boolean;
   showLevelCompletePopup: boolean;
   lastLevelResult: LevelResult | null;
+  hintUsed: boolean;
+  revealedLetters: number[];
 }
 
 export interface LevelResult {

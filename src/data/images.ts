@@ -39,7 +39,6 @@ export const gameImages: GameImage[] = [
   { id: 45, url: 'https://images.pexels.com/photos/60703/pexels-photo-60703.jpeg', answer: 'calculator', difficulty: 3 },
   { id: 46, url: 'https://images.pexels.com/photos/163130/truck-vehicle-transportation-traffic-163130.jpeg', answer: 'truck', difficulty: 4 },
   { id: 47, url: 'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg', answer: 'typewriter', difficulty: 5 },
-  { id: 48, url: 'https://images.pexels.com/photos/19670/pexels-photo.jpg', answer: 'lamp', difficulty: 3 },
   { id: 49, url: 'https://images.pexels.com/photos/279949/pexels-photo-279949.jpeg', answer: 'mechanic', difficulty: 4 },
   { id: 51, url: 'https://images.pexels.com/photos/326957/pexels-photo-326957.jpeg', answer: 'dog on a bridge', difficulty: 5 },
   { id: 53, url: 'https://images.pexels.com/photos/301703/pexels-photo-301703.jpeg', answer: 'tools', difficulty: 5 },

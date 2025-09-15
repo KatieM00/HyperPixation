@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GameState } from '../types/game';
-import { Timer, Star, ArrowRight } from 'lucide-react';
+import { Timer, Star, ArrowRight, Lightbulb } from 'lucide-react';
 import { PixelatedImage } from './PixelatedImage';
 import { LevelCompletePopup } from './LevelCompletePopup';
+import { getHintDisplay } from '../utils/gameHelpers';
 
 interface GameScreenProps {
   gameState: GameState;
   onGuess: (guess: string) => boolean;
   onCloseLevelCompletePopup: () => void;
+  onUseHint: () => void;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCloseLevelCompletePopup }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCloseLevelCompletePopup, onUseHint }) => {
   const [currentGuess, setCurrentGuess] = useState('');
   const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect' | null; message: string }>({ type: null, message: '' });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,16 +134,40 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCl
                 </p>
               </div>
 
+              {/* Hint Display */}
+              {gameState.hintUsed && gameState.currentImage && (
+                <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lightbulb className="w-5 h-5 text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">Hint:</span>
+                  </div>
+                  <div className="font-mono text-2xl text-yellow-800 tracking-wider text-center">
+                    {getHintDisplay(gameState.currentImage.answer, gameState.revealedLetters)}
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={currentGuess}
-                  onChange={(e) => setCurrentGuess(e.target.value)}
-                  placeholder="Enter your guess..."
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-lg transition-colors"
-                  disabled={!gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}
-                />
+                <div className="flex gap-3">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={currentGuess}
+                    onChange={(e) => setCurrentGuess(e.target.value)}
+                    placeholder="Enter your guess..."
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-lg transition-colors"
+                    disabled={!gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}
+                  />
+                  <button
+                    type="button"
+                    onClick={onUseHint}
+                    disabled={gameState.hintUsed || !gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}
+                    className="px-4 py-3 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-300 text-white rounded-xl transition-all duration-200 hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center gap-2"
+                    title={gameState.hintUsed ? "Hint already used" : "Get a hint"}
+                  >
+                    <Lightbulb className="w-5 h-5" />
+                  </button>
+                </div>
                 <button
                   type="submit"
                   disabled={!currentGuess.trim() || !gameState.isGameActive || gameState.showUnblurred || gameState.showLevelCompletePopup}

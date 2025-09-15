@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { GameState, GameImage, LevelResult } from '../types/game';
 import { gameImages, getRandomGameImages } from '../data/images';
+import { generateHint } from '../utils/gameHelpers';
 
 const initialGameState: GameState = {
   currentLevel: 1,
@@ -15,7 +16,9 @@ const initialGameState: GameState = {
   levelResults: [],
   showUnblurred: false,
   showLevelCompletePopup: false,
-  lastLevelResult: null
+  lastLevelResult: null,
+  hintUsed: false,
+  revealedLetters: []
 };
 
 export const useGameState = () => {
@@ -66,7 +69,9 @@ export const useGameState = () => {
       guessHistory: [],
       showUnblurred: false,
       showLevelCompletePopup: false,
-      lastLevelResult: null
+      lastLevelResult: null,
+      hintUsed: false,
+      revealedLetters: []
     }));
   }, [gameState.currentLevel, selectedImages]);
 
@@ -82,6 +87,18 @@ export const useGameState = () => {
       nextLevel();
     }, 100);
   }, [nextLevel]);
+
+  const useHint = useCallback(() => {
+    if (!gameState.currentImage || gameState.hintUsed || !gameState.isGameActive) return;
+    
+    const revealedLetters = generateHint(gameState.currentImage.answer, gameState.revealedLetters);
+    
+    setGameState(prev => ({
+      ...prev,
+      hintUsed: true,
+      revealedLetters
+    }));
+  }, [gameState.currentImage, gameState.hintUsed, gameState.isGameActive, gameState.revealedLetters]);
 
   const makeGuess = useCallback((guess: string) => {
     if (!gameState.currentImage || !gameState.isGameActive) return false;
@@ -194,6 +211,7 @@ export const useGameState = () => {
     startGame,
     resetGame,
     makeGuess,
-    closeLevelCompletePopup
+    closeLevelCompletePopup,
+    useHint
   };
 };
