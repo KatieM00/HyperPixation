@@ -100,6 +100,30 @@ export const useGameState = () => {
     }));
   }, [gameState.currentImage, gameState.hintUsed, gameState.isGameActive, gameState.revealedLetters]);
 
+  const skipLevel = useCallback(() => {
+    if (!gameState.isGameActive) return;
+    
+    console.log('Skipping level due to image load error');
+    
+    // Record as a failed level
+    const levelResult: LevelResult = {
+      level: gameState.currentLevel,
+      correct: false,
+      guessNumber: 5,
+      pointsEarned: 0
+    };
+    
+    setGameState(prev => ({
+      ...prev,
+      levelResults: [...prev.levelResults, levelResult]
+    }));
+    
+    // Move to next level immediately
+    setTimeout(() => {
+      nextLevel();
+    }, 500);
+  }, [gameState.isGameActive, gameState.currentLevel, nextLevel]);
+
   const makeGuess = useCallback((guess: string) => {
     if (!gameState.currentImage || !gameState.isGameActive) return false;
 
@@ -214,6 +238,7 @@ export const useGameState = () => {
     resetGame,
     makeGuess,
     closeLevelCompletePopup,
-    useHint
+    useHint,
+    skipLevel
   };
 };

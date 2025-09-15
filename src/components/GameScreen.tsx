@@ -10,9 +10,10 @@ interface GameScreenProps {
   onGuess: (guess: string) => boolean;
   onCloseLevelCompletePopup: () => void;
   onUseHint: () => void;
+  onSkipLevel: () => void;
 }
 
-export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCloseLevelCompletePopup, onUseHint }) => {
+export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCloseLevelCompletePopup, onUseHint, onSkipLevel }) => {
   const [currentGuess, setCurrentGuess] = useState('');
   const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect' | null; message: string }>({ type: null, message: '' });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -97,6 +98,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ gameState, onGuess, onCl
                     alt="Guess this image"
                     pixelSize={getPixelationLevel()}
                     className="aspect-square bg-gray-100 rounded-2xl overflow-hidden"
+                    onError={onSkipLevel}
                   />
                 </div>
                 <div className="absolute top-4 right-4 bg-white/90 rounded-full px-3 py-1 text-sm font-medium text-gray-700">

@@ -5,13 +5,15 @@ interface PixelatedImageProps {
   alt: string;
   pixelSize: number;
   className?: string;
+  onError?: () => void;
 }
 
 export const PixelatedImage: React.FC<PixelatedImageProps> = ({ 
   src, 
   alt, 
   pixelSize, 
-  className = '' 
+  className = '',
+  onError
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -26,51 +28,71 @@ export const PixelatedImage: React.FC<PixelatedImageProps> = ({
     if (!ctx) return;
 
     const pixelate = () => {
-      const { naturalWidth, naturalHeight } = image;
-      
-      // Set canvas size to match container
-      const containerSize = 400; // Fixed size for consistency
-      canvas.width = containerSize;
-      canvas.height = containerSize;
-      
-      // Calculate scaled dimensions maintaining aspect ratio
-      const aspectRatio = naturalWidth / naturalHeight;
-      let drawWidth = containerSize;
-      let drawHeight = containerSize;
-      
-      if (aspectRatio > 1) {
-        drawHeight = containerSize / aspectRatio;
-      } else {
-        drawWidth = containerSize * aspectRatio;
+      // Check if image is in broken state or failed to load
+      if (!image.complete || image.naturalWidth === 0 || image.naturalHeight === 0) {
+        console.error('Image is in broken state or failed to load:', src);
+        onError?.();
+        return;
       }
-      
-      const offsetX = (containerSize - drawWidth) / 2;
-      const offsetY = (containerSize - drawHeight) / 2;
-      
-      // Clear canvas
-      ctx.clearRect(0, 0, containerSize, containerSize);
-      
-      // Disable image smoothing for pixelated effect
-      ctx.imageSmoothingEnabled = false;
-      
-      // Calculate pixelated dimensions
-      const pixelatedWidth = Math.max(1, Math.floor(drawWidth / pixelSize));
-      const pixelatedHeight = Math.max(1, Math.floor(drawHeight / pixelSize));
-      
-      // Draw image small first
-      ctx.drawImage(image, offsetX, offsetY, pixelatedWidth, pixelatedHeight);
-      
-      // Scale it back up to create pixelation
-      ctx.drawImage(
-        canvas,
-        offsetX, offsetY, pixelatedWidth, pixelatedHeight,
-        offsetX, offsetY, drawWidth, drawHeight
-      );
+
+      try {
+        const { naturalWidth, naturalHeight } = image;
+        
+        // Set canvas size to match container
+        const containerSize = 400; // Fixed size for consistency
+        canvas.width = containerSize;
+        canvas.height = containerSize;
+        
+        // Calculate scaled dimensions maintaining aspect ratio
+        const aspectRatio = naturalWidth / naturalHeight;
+        let drawWidth = containerSize;
+        let drawHeight = containerSize;
+        
+        if (aspectRatio > 1) {
+          drawHeight = containerSize / aspectRatio;
+        } else {
+          drawWidth = containerSize * aspectRatio;
+        }
+        
+        const offsetX = (containerSize - drawWidth) / 2;
+        const offsetY = (containerSize - drawHeight) / 2;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, containerSize, containerSize);
+        
+        // Disable image smoothing for pixelated effect
+        ctx.imageSmoothingEnabled = false;
+        
+        // Calculate pixelated dimensions
+        const pixelatedWidth = Math.max(1, Math.floor(drawWidth / pixelSize));
+        const pixelatedHeight = Math.max(1, Math.floor(drawHeight / pixelSize));
+        
+        // Draw image small first - wrapped in try-catch to handle broken images
+        ctx.drawImage(image, offsetX, offsetY, pixelatedWidth, pixelatedHeight);
+        
+        // Scale it back up to create pixelation
+        ctx.drawImage(
+          canvas,
+          offsetX, offsetY, pixelatedWidth, pixelatedHeight,
+          offsetX, offsetY, drawWidth, drawHeight
+        );
+      } catch (error) {
+        console.error('Error drawing image to canvas:', error, 'Image src:', src);
+        onError?.();
+      }
+    };
+
+    // Set up error handler first
+    image.onerror = () => {
+      console.error('Failed to load image (404 or network error):', src);
+      onError?.();
     };
 
     if (image.complete) {
+      // Image is already loaded, but check if it's broken
       pixelate();
     } else {
+      // Image is still loading
       image.onload = pixelate;
     }
   }, [src, pixelSize]);
