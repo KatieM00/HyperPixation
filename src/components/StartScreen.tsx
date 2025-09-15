@@ -14,7 +14,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
             Hyper<span className="text-orange-500">Pixation</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            This "Test your pixel recognition to work out what's hidden within the pixels! Think you know what pixelated animals, every day items or even landscapes look like? How many points will you get?"
+            Test your pixel recognition to work out what's hidden within the pixels! Think you know what pixelated animals, every day items or even landscapes look like? How many points will you get?
           </p>
         </div>
 

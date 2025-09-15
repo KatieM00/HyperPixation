@@ -61,7 +61,6 @@ export const gameImages: GameImage[] = [
   { id: 109, url: 'https://images.pexels.com/photos/1893555/pexels-photo-1893555.jpeg', answer: 'chips', difficulty: 3 },
   { id: 110, url: 'https://images.pexels.com/photos/410648/pexels-photo-410648.jpeg', answer: 'ribs', difficulty: 2 },
   { id: 111, url: 'https://images.pexels.com/photos/248444/pexels-photo-248444.jpeg', answer: 'sushi', difficulty: 2 },
-  { id: 113, url: 'https://images.pexels.com/photos/221143/pexels-photo-221143.jpeg', answer: 'grapes', difficulty: 5 },
   { id: 115, url: 'https://images.pexels.com/photos/327098/pexels-photo-327098.jpeg', answer: 'oranges', difficulty: 4 },
   { id: 121, url: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg', answer: 'eiffel tower', difficulty: 1 },
   { id: 122, url: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg', answer: 'Big Ben', difficulty: 3 },
